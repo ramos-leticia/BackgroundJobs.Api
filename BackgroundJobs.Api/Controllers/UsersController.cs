@@ -1,42 +1,27 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using BackgroundJobs.Api.Models;
+using BackgroundJobs.Api.Services;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace BackgroundJobs.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-        // GET: api/<UsersController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IUserService _userService;
+
+        public UsersController(IUserService userService)
         {
-            return new string[] { "value1", "value2" };
+            _userService = userService;
         }
 
-        // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpPost("user")]
+        public async Task<IActionResult> CreateUser([FromBody] UserDTO userDto)
         {
-            return "value";
-        }
-
-        [HttpPost("users")]
-        public void Post([FromBody] string value)
-        {
-        }
-
-        // PUT api/<UsersController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<UsersController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            var user = await _userService.CreateAsync(userDto.Name, userDto.Email);
+            return CreatedAtAction(nameof(CreateUser), new { id = user.Id }, user);
         }
     }
 }

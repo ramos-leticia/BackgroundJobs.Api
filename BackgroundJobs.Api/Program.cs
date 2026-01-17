@@ -1,10 +1,15 @@
 using Hangfire;
 using Hangfire.Storage.SQLite;
 using Scalar.AspNetCore;
+using BackgroundJobs.Api.Context;
+using Microsoft.EntityFrameworkCore;
+using BackgroundJobs.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("ApplicationDb"))
+);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -19,6 +24,7 @@ builder.Services.AddHangfire(config =>
           );
 });
 builder.Services.AddHangfireServer();
+builder.Services.AddScoped<IUserService, UserService>();
 
 var app = builder.Build();
 
