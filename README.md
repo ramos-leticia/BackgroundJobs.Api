@@ -125,5 +125,3 @@ A aplicação estará disponível com:
 ### 📌 Observações
 
 * Conceitos como idempotência, mensageria e tolerância avançada a falhas não foram abordados nessa demo
-
----
