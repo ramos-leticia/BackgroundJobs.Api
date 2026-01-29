@@ -14,7 +14,6 @@ public class AppDbContext : DbContext
   {
     base.OnModelCreating(modelBuilder);
 
-    // Configuração da entidade User
     modelBuilder.Entity<User>(entity =>
     {
       entity.HasKey(e => e.Id);
@@ -26,6 +25,9 @@ public class AppDbContext : DbContext
       entity.Property(e => e.Email)
               .IsRequired()
               .HasMaxLength(150);
+
+      entity.Property(e => e.IsActive)
+                  .IsRequired();
 
       entity.ToTable("Users");
     });
