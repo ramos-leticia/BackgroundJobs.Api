@@ -25,6 +25,8 @@ builder.Services.AddHangfire(config =>
 });
 builder.Services.AddHangfireServer();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUserMaintenanceService, UserMaintenanceService>();
 
 var app = builder.Build();
 
@@ -44,6 +46,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.UseHangfireDashboard("/hangfire");
+
+RecurringJob.AddOrUpdate<UserMaintenanceService>(
+  "deactivate-users-job",
+  service => service.DeactivateInactiveUsersAsync(),
+  Cron.Minutely
+);
 
 app.MapControllers();
 
